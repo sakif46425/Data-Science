@@ -1,0 +1,48 @@
+# 1. Load the CSV file (replace empty string, "NA", "N/A" with NA)
+data <- read.csv("E:/Summer semester 24-25/01022 - INTRODUCTION TO DATA SCIENCE [B]/Mid-Report/IDS Sec-B Midterm Summer 24-25 Depression Student Dataset - modified.csv",
+                 na.strings = c("", "NA", "N/A"))
+
+# 2. Define numeric and categorical columns
+numeric_cols <- sapply(data, is.numeric)
+categorical_cols <- sapply(data, is.character)
+
+cat(" Numeric columns:\n")
+print(names(data)[numeric_cols])
+
+cat("\n Categorical columns:\n")
+print(names(data)[categorical_cols])
+
+# 3. Check for duplicate rows
+duplicates <- duplicated(data)
+cat("\n Number of duplicate rows:", sum(duplicates), "\n")
+
+# 4. Show missing values (null values)
+cat("\n Missing values per column BEFORE handling:\n")
+print(colSums(is.na(data)))
+
+# 5. Convert missing values in categorical columns (workex and degree_t) to mode
+get_mode <- function(v) {
+  uniq_vals <- unique(na.omit(v))
+  uniq_vals[which.max(tabulate(match(v, uniq_vals)))]
+}
+
+cat_cols_to_handle <- c("workex", "degree_t")
+
+for (col in cat_cols_to_handle) {
+  mode_val <- get_mode(data[[col]])
+  data[[col]][is.na(data[[col]])] <- mode_val
+  cat(paste(" Filled missing in", col, "with mode:", mode_val, "\n"))
+}
+
+# 6. Fill missing values in numeric columns with column mean
+num_cols_to_handle <- names(data)[numeric_cols]
+
+for (col in num_cols_to_handle) {
+  mean_val <- mean(data[[col]], na.rm = TRUE)
+  data[[col]][is.na(data[[col]])] <- mean_val
+  cat(paste(" Filled missing in", col, "with mean:", round(mean_val, 2), "\n"))
+}
+
+# 7. Show missing values after handling
+cat("\n Missing values per column AFTER handling:\n")
+print(colSums(is.na(data)))
