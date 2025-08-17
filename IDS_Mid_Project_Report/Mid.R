@@ -4,7 +4,7 @@
 library(dplyr)
 
 
-# 1. Read the CSV file
+#  Read the CSV file
 
 file_path <- "E:/Summer semester 24-25/01022 - INTRODUCTION TO DATA SCIENCE [B]/Mid-Report/IDS Sec-B Midterm Summer 24-25 Depression Student Dataset - modified.csv"
 df <- read.csv(file_path, stringsAsFactors = FALSE)
@@ -14,8 +14,7 @@ cat("Number of rows:", nrow(df), "\n")
 cat("Number of columns:", ncol(df), "\n\n")
 
 
-# 2. Define numeric & categorical columns
-
+#  Define numeric & categorical columns
 numeric_cols <- sapply(df, is.numeric)
 cat_cols <- !numeric_cols
 
@@ -24,6 +23,18 @@ print(names(df)[numeric_cols])
 cat("\n Categorical columns:\n")
 print(names(df)[cat_cols])
 cat("\n")
+
+# Summary of numeric columns
+cat(" Summary of numeric columns:\n")
+print(summary(df[, numeric_cols]))
+
+# Summary of categorical columns
+cat("\n Summary of categorical columns:\n")
+for (col in names(df)[cat_cols]) {
+  cat("\n", col, ":\n")
+  print(table(df[[col]], useNA = "ifany"))
+}
+
 
 
 # 3. Check for duplicates & remove
